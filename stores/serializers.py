@@ -36,7 +36,7 @@ class CategoriesTitleSerializer(serializers.ModelSerializer):
         fields = ['title']
 
 
-class FoodSerializer(serializers.ModelSerializer):
+class FoodCreateSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
@@ -59,13 +59,13 @@ class FoodSerializer(serializers.ModelSerializer):
         return instance
 
 
+'''Главная страница'''
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'title']
-
-
-'''Главная страница'''
 
 
 class KitchenRetrieveSerializer(serializers.ModelSerializer):
@@ -91,11 +91,21 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'time', 'image', 'owner', 'kitchen']
 
 
+class FoodSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Food
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner']
+
+
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     kitchen = KitchenRetrieveSerializer(many=True)
+    food = FoodSerializer(many=True)
+    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
-        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food']
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
         lookup_fields = 'slug'

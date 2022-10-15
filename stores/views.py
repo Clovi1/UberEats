@@ -40,7 +40,7 @@ class KitchenDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class FoodList(generics.ListCreateAPIView):
     queryset = Food.objects.all()
-    serializer_class = serializers.FoodSerializer
+    serializer_class = serializers.FoodCreateSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -48,7 +48,7 @@ class FoodList(generics.ListCreateAPIView):
 
 class FoodDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Food.objects.all()
-    serializer_class = serializers.FoodSerializer
+    serializer_class = serializers.FoodCreateSerializer
 
 
 class CategoryList(generics.ListCreateAPIView):
