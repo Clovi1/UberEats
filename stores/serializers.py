@@ -51,12 +51,12 @@ class FoodCreateSerializer(serializers.ModelSerializer):
             food.restaurants.categories.add(category.pk)
         return food
 
-    def update(self, instance, validated_data):
-        categories = validated_data.pop('categories')
-        instance.categories.set(categories)
-        # instance.restaurants.categories.set(categories)
-        instance.save()
-        return instance
+    # def update(self, instance, validated_data):
+    #     categories = validated_data.pop('categories')
+    #     instance.categories.set(categories)
+    #     # instance.restaurants.categories.set(categories)
+    #     instance.save()
+    #     return instance
 
 
 '''Главная страница'''
