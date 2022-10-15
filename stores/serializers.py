@@ -109,3 +109,12 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
         model = Restaurant
         fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
         lookup_fields = 'slug'
+
+
+class RestaurantUpdateSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Restaurant
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
+        lookup_field = 'slug'

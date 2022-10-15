@@ -6,6 +6,7 @@ urlpatterns = [
     # Главная страница
     path('restaurants/', views.RestaurantList.as_view(), name='restaurants'),
     path('restaurants/create/', views.RestaurantCreate.as_view(), name='create_restaurants'),
+    path('restaurants/update/<slug:slug>/', views.RestaurantUpdate.as_view(), name='update_restaurant'),
     # path('restaurants/<int:pk>/', views.RestaurantDetail.as_view(), name='restaurant_pk'),
     path('restaurants/<slug:slug>/', views.RestaurantDetail.as_view(), name='restaurant_slug'),
 

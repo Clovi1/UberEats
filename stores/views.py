@@ -77,7 +77,13 @@ class RestaurantCreate(generics.CreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
+class RestaurantDetail(generics.RetrieveDestroyAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = serializers.RestaurantDetailSerializer
+    lookup_field = 'slug'
+
+
+class RestaurantUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Restaurant.objects.all()
+    serializer_class = serializers.RestaurantUpdateSerializer
     lookup_field = 'slug'
