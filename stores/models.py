@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework.reverse import reverse
 from slugify import slugify
 
 
@@ -20,6 +21,9 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('restaurant_slug', kwargs={'slug': self.slug})
 
 
 class Kitchen(models.Model):

@@ -68,20 +68,19 @@ class CategorySerializer(serializers.ModelSerializer):
 '''Главная страница'''
 
 
-class KitchenInRestaurantSerializer(serializers.ModelSerializer):
+class KitchenRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kitchen
         fields = ['id', 'title']
 
 
-class RestaurantRetrieveSerializer(serializers.ModelSerializer):
+class RestaurantListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    kitchen = KitchenInRestaurantSerializer(many=True)
+    kitchen = KitchenRetrieveSerializer(many=True)
 
     class Meta:
         model = Restaurant
         fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen']
-        # depth = 1
 
 
 class RestaurantCreateSerializer(serializers.ModelSerializer):
@@ -90,3 +89,13 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'title', 'time', 'image', 'owner', 'kitchen']
+
+
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    kitchen = KitchenRetrieveSerializer(many=True)
+
+    class Meta:
+        model = Restaurant
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food']
+        lookup_fields = 'slug'

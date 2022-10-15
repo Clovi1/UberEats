@@ -23,9 +23,9 @@ class UserDetail(generics.RetrieveAPIView):
 #         serializer.save(owner=self.request.user)
 
 
-class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Restaurant.objects.all()
-    serializer_class = serializers.RestaurantSerializer
+# class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Restaurant.objects.all()
+#     serializer_class = serializers.RestaurantSerializer
 
 
 class KitchenList(generics.ListCreateAPIView):
@@ -66,7 +66,7 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class RestaurantList(generics.ListAPIView):
     queryset = Restaurant.objects.all()
-    serializer_class = serializers.RestaurantRetrieveSerializer
+    serializer_class = serializers.RestaurantListSerializer
 
 
 class RestaurantCreate(generics.CreateAPIView):
@@ -75,3 +75,9 @@ class RestaurantCreate(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class RestaurantDetail(generics.RetrieveAPIView):
+    queryset = Restaurant.objects.all()
+    serializer_class = serializers.RestaurantDetailSerializer
+    lookup_field = 'slug'
