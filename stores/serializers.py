@@ -96,18 +96,18 @@ class FoodSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Food
-        fields = ['id', 'title', 'description', 'image', 'price', 'owner']
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories','restaurants']
 
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     kitchen = KitchenRetrieveSerializer(many=True)
-    food = FoodSerializer(many=True)
+    # food = FoodSerializer(many=True)
     categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
-        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'categories']
         lookup_fields = 'slug'
 
 

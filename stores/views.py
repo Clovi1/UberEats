@@ -38,7 +38,7 @@ class KitchenDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.KitchenSerializer
 
 
-class FoodList(generics.ListCreateAPIView):
+class FoodOldList(generics.ListCreateAPIView):
     queryset = Food.objects.all()
     serializer_class = serializers.FoodCreateSerializer
 
@@ -82,8 +82,28 @@ class RestaurantDetail(generics.RetrieveDestroyAPIView):
     serializer_class = serializers.RestaurantDetailSerializer
     lookup_field = 'slug'
 
+    # def get_queryset(self):
+    #     queryset = Restaurant.objects.all()
+    #     category = self.request.query_params.get('category')
+    #     if category:
+    #         queryset = queryset.filter(food__categories=category)
+    #     return queryset
+
 
 class RestaurantUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = serializers.RestaurantUpdateSerializer
     lookup_field = 'slug'
+
+
+class FoodList(generics.ListAPIView):
+    serializer_class = serializers.FoodSerializer
+
+    def get_queryset(self):
+        queryset = Food.objects.all()
+        restaurant = self.request.query_params.get('restaurant')
+        category = self.request.query_params.get('category')
+        if restaurant and category:
+            queryset = queryset.filter(restaurants=restaurant, categories=category)
+
+        return queryset
