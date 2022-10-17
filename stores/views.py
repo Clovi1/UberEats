@@ -92,32 +92,24 @@ class RestaurantDetail(APIView):
     """"""
     lookup_field = 'slug'
 
-    @staticmethod
-    def get_restaurant(slug):
+    def get_object(self, slug):
         try:
             return Restaurant.objects.get(slug=slug)
         except ObjectDoesNotExist:
             return Response({'Fail': 'Такого ресторана не существует'}, status=status.HTTP_404_NOT_FOUND)
 
-    @staticmethod
-    def get_food(pk, rest_pk):
-        food = Food.objects.filter(categories=pk, restaurants=rest_pk)
-        if not food:
-            return {'Fail': 'Мы пока не добавили еду с такой категорией'}
-        else:
-            return FoodSerializer(food, many=True).data
-
     def get(self, request, slug):
         # Получение ресторана
-        restaurant = self.get_restaurant(slug)
+        restaurant = self.get_object(slug)
         if isinstance(restaurant, Response): return restaurant
         restaurant_serializer = RestaurantDetailSerializer(restaurant)
 
         # Получение еды
         pk = request.query_params.get('category')
-        food_serializer = self.get_food(pk, restaurant.pk)
+        food = Food.objects.filter(categories=pk, restaurants=restaurant.pk)
+        food_serializer = FoodSerializer(food, many=True)
 
-        return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer},
+        return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer.data},
                         status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
