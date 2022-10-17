@@ -96,6 +96,7 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
 class FoodSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     categories = CategorySerializer(many=True, read_only=True)
+    image = serializers.ImageField()
 
     class Meta:
         model = Food
@@ -105,7 +106,6 @@ class FoodSerializer(serializers.ModelSerializer):
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     kitchen = KitchenRetrieveSerializer(many=True)
-    # food = FoodSerializer(many=True)
     categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:

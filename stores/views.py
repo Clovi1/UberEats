@@ -75,7 +75,7 @@ class CategoryList(ListCreateAPIView):
 class RestaurantList(APIView):
     def get(self, request):
         restaurants = Restaurant.objects.all()
-        data = RestaurantListSerializer(restaurants, many=True).data
+        data = RestaurantListSerializer(restaurants, many=True, context={"request": request}).data
         return Response({'restaurants': data})
 
     def post(self, request):
@@ -102,12 +102,12 @@ class RestaurantDetail(APIView):
         # Получение ресторана
         restaurant = self.get_object(slug)
         if isinstance(restaurant, Response): return restaurant
-        restaurant_serializer = RestaurantDetailSerializer(restaurant)
+        restaurant_serializer = RestaurantDetailSerializer(restaurant, context={"request": request})
 
         # Получение еды
         pk = request.query_params.get('category')
         food = Food.objects.filter(categories=pk, restaurants=restaurant.pk)
-        food_serializer = FoodSerializer(food, many=True)
+        food_serializer = FoodSerializer(food, many=True, context={"request": request})
 
         return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer.data},
                         status=status.HTTP_200_OK)
