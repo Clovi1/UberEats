@@ -28,6 +28,8 @@ class KitchenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kitchen
         fields = ['id', 'title']
+
+
 #
 #
 # class CategoriesTitleSerializer(serializers.ModelSerializer):
@@ -93,10 +95,11 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
 
 class FoodSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Food
-        fields = ['id', 'title', 'description', 'image', 'price', 'owner']
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories']
 
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):

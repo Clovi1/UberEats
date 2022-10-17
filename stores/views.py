@@ -37,6 +37,7 @@ class KitchenList(ListCreateAPIView):
     queryset = Kitchen.objects.all()
     serializer_class = KitchenSerializer
 
+
 #
 # class KitchenDetail(RetrieveUpdateDestroyAPIView):
 #     queryset = Kitchen.objects.all()
@@ -50,6 +51,7 @@ class FoodOldList(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
 #
 # class FoodDetail(RetrieveUpdateDestroyAPIView):
 #     queryset = Food.objects.all()
@@ -59,6 +61,7 @@ class FoodOldList(ListCreateAPIView):
 class CategoryList(ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
 
 #
 # class CategoryDetail(RetrieveUpdateDestroyAPIView):
@@ -86,31 +89,33 @@ class RestaurantList(APIView):
 
 
 class RestaurantDetail(APIView):
+    """"""
     lookup_field = 'slug'
 
-    def get_restaurant(self, slug):
+    @staticmethod
+    def get_restaurant(slug):
         try:
             return Restaurant.objects.get(slug=slug)
         except ObjectDoesNotExist:
             return Response({'Fail': 'Такого ресторана не существует'}, status=status.HTTP_404_NOT_FOUND)
 
-    def get_food(self, pk):
-        try:
-            return Food.objects.filter(categories=pk)
-        except ObjectDoesNotExist:
-            return Response({'Fail': 'Мы пока не добавили еду с такой категорией'}, status=status.HTTP_404_NOT_FOUND)
+    @staticmethod
+    def get_food(pk, rest_pk):
+        food = Food.objects.filter(categories=pk, restaurants=rest_pk)
+        if not food:
+            return {'Fail': 'Мы пока не добавили еду с такой категорией'}
+        else:
+            return FoodSerializer(food, many=True).data
 
     def get(self, request, slug):
+        # Получение ресторана
         restaurant = self.get_restaurant(slug)
         if isinstance(restaurant, Response): return restaurant
-
-        pk = request.query_params.get('category')
-        food = Food.objects.filter(categories=pk, restaurants=restaurant.pk)
-        if not food:
-            food_serializer = {'Fail': 'Мы пока не добавили еду с такой категорией'}
-        else:
-            food_serializer = FoodSerializer(food,  many=True).data
         restaurant_serializer = RestaurantDetailSerializer(restaurant)
+
+        # Получение еды
+        pk = request.query_params.get('category')
+        food_serializer = self.get_food(pk, restaurant.pk)
 
         return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer},
                         status=status.HTTP_200_OK)
