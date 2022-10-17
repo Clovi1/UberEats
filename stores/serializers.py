@@ -12,30 +12,30 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'restaurants']
 
 
-class RestaurantSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    # food = serializers.StringRelatedField(many=True, source='food__title')
-    # food = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Restaurant
-        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
-
-
+# class RestaurantSerializer(serializers.ModelSerializer):
+#     owner = serializers.ReadOnlyField(source='owner.username')
+#     categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#
+#     # food = serializers.StringRelatedField(many=True, source='food__title')
+#     # food = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#
+#     class Meta:
+#         model = Restaurant
+#         fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
+#
+#
 class KitchenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kitchen
         fields = ['id', 'title']
-
-
-class CategoriesTitleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['title']
-
-
+#
+#
+# class CategoriesTitleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Category
+#         fields = ['title']
+#
+#
 class FoodCreateSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
@@ -96,7 +96,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Food
-        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories','restaurants']
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner']
 
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
