@@ -12,53 +12,27 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'restaurants']
 
 
-# class RestaurantSerializer(serializers.ModelSerializer):
+# class FoodCreateSerializer(serializers.ModelSerializer):
 #     owner = serializers.ReadOnlyField(source='owner.username')
-#     categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-#
-#     # food = serializers.StringRelatedField(many=True, source='food__title')
-#     # food = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 #
 #     class Meta:
-#         model = Restaurant
-#         fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'food', 'categories']
+#         model = Food
+#         fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'restaurants', 'categories']
 #
-#
-class KitchenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Kitchen
-        fields = ['id', 'title']
+#     def create(self, validated_data):
+#         categories = validated_data.pop('categories')
+#         food = Food.objects.create(**validated_data)
+#         food.categories.set(categories)
+#         for category in categories:
+#             food.restaurants.categories.add(category.pk)
+#         return food
 
-
-#
-#
-# class CategoriesTitleSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Category
-#         fields = ['title']
-#
-#
-class FoodCreateSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-
-    class Meta:
-        model = Food
-        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'restaurants', 'categories']
-
-    def create(self, validated_data):
-        categories = validated_data.pop('categories')
-        food = Food.objects.create(**validated_data)
-        food.categories.set(categories)
-        for category in categories:
-            food.restaurants.categories.add(category.pk)
-        return food
-
-    # def update(self, instance, validated_data):
-    #     categories = validated_data.pop('categories')
-    #     instance.categories.set(categories)
-    #     # instance.restaurants.categories.set(categories)
-    #     instance.save()
-    #     return instance
+# def update(self, instance, validated_data):
+#     categories = validated_data.pop('categories')
+#     instance.categories.set(categories)
+#     # instance.restaurants.categories.set(categories)
+#     instance.save()
+#     return instance
 
 
 '''Главная страница'''
@@ -70,7 +44,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'title']
 
 
-class KitchenRetrieveSerializer(serializers.ModelSerializer):
+class KitchenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kitchen
         fields = ['id', 'title']
@@ -78,7 +52,7 @@ class KitchenRetrieveSerializer(serializers.ModelSerializer):
 
 class RestaurantListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    kitchen = KitchenRetrieveSerializer(many=True)
+    kitchen = KitchenSerializer(many=True)
 
     class Meta:
         model = Restaurant
@@ -87,16 +61,23 @@ class RestaurantListSerializer(serializers.ModelSerializer):
 
 class RestaurantCreateSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-
+    kitchen = KitchenSerializer(many=True)
     class Meta:
         model = Restaurant
         fields = ['id', 'title', 'time', 'image', 'owner', 'kitchen']
 
 
-class FoodSerializer(serializers.ModelSerializer):
+class FoodListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    categories = CategorySerializer(many=True, read_only=True)
-    image = serializers.ImageField()
+    categories = CategorySerializer(many=True)
+
+    class Meta:
+        model = Food
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories']
+
+
+class FoodCreateSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Food
@@ -105,12 +86,11 @@ class FoodSerializer(serializers.ModelSerializer):
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    kitchen = KitchenRetrieveSerializer(many=True)
-    categories = CategorySerializer(many=True, read_only=True)
+    kitchen = KitchenSerializer(many=True)
 
     class Meta:
         model = Restaurant
-        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'categories']
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen']
         lookup_fields = 'slug'
 
 

@@ -54,6 +54,7 @@ class Food(models.Model):
 
 class Category(models.Model):
     title = models.CharField('Название', max_length=100)
+
     food = models.ManyToManyField('Food', related_name='categories', blank=True)
     restaurants = models.ManyToManyField('Restaurant', related_name='categories', blank=True)
 

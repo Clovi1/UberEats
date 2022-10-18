@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_list_or_404
 from rest_framework import status
 from rest_framework.generics import *
 from rest_framework.response import Response
@@ -28,45 +29,19 @@ class UserDetail(RetrieveAPIView):
 # #         serializer.save(owner=self.request.user)
 #
 #
-# # class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
+# # class RestaurantRetrieve(generics.RetrieveUpdateDestroyAPIView):
 # #     queryset = Restaurant.objects.all()
 # #     serializer_class = serializers.RestaurantSerializer
 #
 #
-class KitchenList(ListCreateAPIView):
-    queryset = Kitchen.objects.all()
-    serializer_class = KitchenSerializer
-
-
-#
-# class KitchenDetail(RetrieveUpdateDestroyAPIView):
-#     queryset = Kitchen.objects.all()
-#     serializer_class = KitchenSerializer
-#
-#
-class FoodOldList(ListCreateAPIView):
-    queryset = Food.objects.all()
-    serializer_class = FoodCreateSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-#
-# class FoodDetail(RetrieveUpdateDestroyAPIView):
+# class FoodOldList(ListCreateAPIView):
 #     queryset = Food.objects.all()
 #     serializer_class = FoodCreateSerializer
 #
-
-class CategoryList(ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
 
 
-#
-# class CategoryDetail(RetrieveUpdateDestroyAPIView):
-#     queryset = Category.objects.all()
-#     serializer_class = CategorySerializer
 #
 
 '''Главная страница'''
@@ -88,50 +63,101 @@ class RestaurantList(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
-class RestaurantDetail(APIView):
-    """"""
-    lookup_field = 'slug'
+class RestaurantRetrieve(ListCreateAPIView):
+    """Страница ресторана"""
 
-    def get_object(self, slug):
-        try:
-            return Restaurant.objects.get(slug=slug)
-        except ObjectDoesNotExist:
-            return Response({'Fail': 'Такого ресторана не существует'}, status=status.HTTP_404_NOT_FOUND)
-
-    def get(self, request, slug):
-        # Получение ресторана
-        restaurant = self.get_object(slug)
-        if isinstance(restaurant, Response): return restaurant
-        restaurant_serializer = RestaurantDetailSerializer(restaurant, context={"request": request})
-
-        # Получение еды
-        pk = request.query_params.get('category')
-        food = Food.objects.filter(categories=pk, restaurants=restaurant.pk)
-        food_serializer = FoodSerializer(food, many=True, context={"request": request})
-
-        return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer.data},
-                        status=status.HTTP_200_OK)
-
-    def delete(self, request, pk):
-        restaurant = self.get_restaurant(pk)
-        restaurant.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    # lookup_field = 'slug'
+    #
+    # def get_object(self, slug):
+    #     try:
+    #         return Restaurant.objects.get(slug=slug)
+    #     except ObjectDoesNotExist:
+    #         return Response({'Fail': 'Такого ресторана не существует'}, status=status.HTTP_404_NOT_FOUND)
+    #
+    # def get(self, request, slug):
+    #     # Получение ресторана
+    #     restaurant = self.get_object(slug)
+    #     if isinstance(restaurant, Response): return restaurant
+    #     restaurant_serializer = RestaurantDetailSerializer(restaurant, context={"request": request})
+    #
+    #     # Получение еды
+    #     pk = request.query_params.get('category')
+    #     food = Food.objects.filter(categories=pk, restaurants=restaurant.pk)
+    #     food_serializer = FoodListSerializer(food, many=True, context={"request": request})
+    #
+    #     return Response({'restaurant': restaurant_serializer.data, 'food': food_serializer.data},
+    #                     status=status.HTTP_200_OK)
 
 
-class RestaurantUpdate(RetrieveUpdateDestroyAPIView):
+class RestaurantDetail(RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
-    serializer_class = RestaurantUpdateSerializer
+    serializer_class = RestaurantCreateSerializer
     lookup_field = 'slug'
 
+    # def get_object(self, slug):
+    #     try:
+    #         return Restaurant.objects.get(slug=slug)
+    #     except ObjectDoesNotExist:
+    #         return Response({'Fail': 'Такого ресторана не существует'}, status=status.HTTP_404_NOT_FOUND)
+    #
+    # def get(self, request, slug):
+    #     restaurant = self.get_object(slug)
+    #     if isinstance(restaurant, Response): return restaurant
+    #     serializer = RestaurantDetailSerializer(restaurant, context={"request": request})
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    #
+    # def put(self, request, slug):
+    #     restaurant = self.get_object(slug)
+    #     if isinstance(restaurant, Response): return restaurant
+    #     serializer = RestaurantCreateSerializer(restaurant, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class FoodList(ListAPIView):
-    serializer_class = FoodSerializer
 
-    def get_queryset(self):
-        queryset = Food.objects.all()
-        restaurant = self.request.query_params.get('restaurant')
-        category = self.request.query_params.get('category')
-        if restaurant and category:
-            queryset = queryset.filter(restaurants=restaurant, categories=category)
+class FoodList(ListCreateAPIView):
+    queryset = Food.objects.all()
+    serializer_class = FoodListSerializer
 
-        return queryset
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+# def get(self, request):
+#     food = Food.objects.all()
+#     data = FoodListSerializer(food, many=True, context={"request": request}).data
+#     return Response({'food': data})
+#
+# def post(self, request):
+#     serializer = FoodCreateSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save(owner=self.request.user)
+#         return Response({'Success': 'Блюдо удачно создано', 'food': serializer.data},
+#                         status=status.HTTP_201_CREATED)
+#     return Response({'Fail': 'Ошибка в создании блюда', 'Errors': serializer.errors},
+#                     status=status.HTTP_400_BAD_REQUEST)
+
+class FoodDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Food.objects.all()
+    serializer_class = FoodListSerializer
+
+
+class KitchenList(ListCreateAPIView):
+    queryset = Kitchen.objects.all()
+    serializer_class = KitchenSerializer
+
+
+class KitchenDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Kitchen.objects.all()
+    serializer_class = KitchenSerializer
+
+
+class CategoryList(ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
