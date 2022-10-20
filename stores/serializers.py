@@ -36,22 +36,19 @@ class RestaurantCreateSerializer(serializers.ModelSerializer):
 class RestaurantRetrieveSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     kitchen = KitchenSerializer(many=True, read_only=True)
-    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
-        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen', 'categories']
+        fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen']
         lookup_field = 'slug'
 
 
 class FoodRetrieveSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    categories = CategorySerializer(many=True, read_only=True)
-    restaurants = serializers.ReadOnlyField(source='restaurants.title')
 
     class Meta:
         model = Food
-        fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories', 'restaurants']
+        fields = ['id', 'title', 'description', 'image', 'price', 'owner']
 
 
 class FoodCreateSerializer(serializers.ModelSerializer):
