@@ -7,17 +7,10 @@ router = DefaultRouter()
 router.register(r'restaurants', views.RestaurantViewSet, basename='restaurants')
 router.register(r'category', views.CategoryViewSet, basename='category')
 router.register(r'kitchen', views.KitchenViewSet, basename='kitchen')
+router.register(r'food', views.FoodViewSet, basename='food')
+router.register(r'users', views.UserViewSet, basename='users')
 
 urlpatterns = [
     # Главная страница
     path('', include(router.urls)),
-
-    path('users/', views.UserList.as_view()),
-    path('users/<int:pk>/', views.UserDetail.as_view()),
-
-    path('food/', views.FoodList.as_view()),
-    path('food/<int:pk>/', views.FoodDetail.as_view()),
-
-    # path('foodold/', views.FoodOldList.as_view()),
-
 ]

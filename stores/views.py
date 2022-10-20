@@ -12,12 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 
 
-class UserList(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(RetrieveAPIView):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -30,7 +25,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RestaurantRetrieveSerializer
         else:
-            return RestaurantSerializer
+            return RestaurantCreateSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -47,29 +42,25 @@ class KitchenViewSet(viewsets.ModelViewSet):
     serializer_class = KitchenSerializer
 
 
-# ----------------------------------------------------------
-class FoodList(ListCreateAPIView):
+class FoodViewSet(viewsets.ModelViewSet):
     queryset = Food.objects.all()
-    serializer_class = FoodListSerializer
+    serializer_class = FoodRetrieveSerializer
+    filterset_fields = ['restaurants', 'categories']
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return FoodRetrieveSerializer
+        else:
+            return FoodCreateSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
-# def get(self, request):
-#     food = Food.objects.all()
-#     data = FoodListSerializer(food, many=True, context={"request": request}).data
-#     return Response({'food': data})
-#
-# def post(self, request):
-#     serializer = FoodCreateSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save(owner=self.request.user)
-#         return Response({'Success': 'Блюдо удачно создано', 'food': serializer.data},
-#                         status=status.HTTP_201_CREATED)
-#     return Response({'Fail': 'Ошибка в создании блюда', 'Errors': serializer.errors},
-#                     status=status.HTTP_400_BAD_REQUEST)
-
-class FoodDetail(RetrieveUpdateDestroyAPIView):
-    queryset = Food.objects.all()
-    serializer_class = FoodListSerializer
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        categories = instance.categories.all()
+        for category in categories:
+            if category.food.filter(restaurants=instance.restaurants).count() <= 1:
+                instance.restaurants.categories.remove(category)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
