@@ -1,24 +1,19 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from stores import views
 
+router = DefaultRouter()
+router.register(r'restaurants', views.RestaurantViewSet, basename='restaurants')
+router.register(r'category', views.CategoryViewSet, basename='category')
+router.register(r'kitchen', views.KitchenViewSet, basename='kitchen')
+
 urlpatterns = [
     # Главная страница
-    path('restaurants/', views.RestaurantList.as_view(), name='restaurants'),
-    # path('restaurants/<slug:slug>/', views.RestaurantRetrieve.as_view(), name='restaurant_detail'),
-    path('restaurants/<slug:slug>/', views.RestaurantDetail.as_view(), name='update_restaurant'),
-
-    # path('restaurants/<int:pk>/', views.RestaurantRetrieve.as_view(), name='restaurant_pk'),
-    # path('restaurants/category/', views.FoodList.as_view(), name='food'),
+    path('', include(router.urls)),
 
     path('users/', views.UserList.as_view()),
     path('users/<int:pk>/', views.UserDetail.as_view()),
-
-    path('kitchen/', views.KitchenList.as_view()),
-    path('kitchen/<int:pk>/', views.KitchenDetail.as_view()),
-
-    path('category/', views.CategoryList.as_view()),
-    path('category/<int:pk>/', views.CategoryDetail.as_view()),
 
     path('food/', views.FoodList.as_view()),
     path('food/<int:pk>/', views.FoodDetail.as_view()),

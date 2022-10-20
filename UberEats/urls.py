@@ -17,9 +17,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from .yasg import urlpatterns as doc_urls
 from UberEats import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('stores.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += doc_urls
