@@ -36,7 +36,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         if 'kitchen[]' in request.data:
             kitchen = request.data.get('kitchen[]')
             print(f'kitchen: {kitchen}')
-            request.data['kitchen'].add(kitchen)
+            request.data.add(kitchen)
             print(request.data)
         return super().update(request, *args, **kwargs)
 
@@ -45,7 +45,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         if 'kitchen[]' in request.data:
             kitchen = request.data.get('kitchen[]')
             print(f'kitchen: {kitchen}')
-            request.data['kitchen'].add(kitchen)
+            request.data.add(kitchen)
             print(request.data)
         return super().partial_update(request, *args, **kwargs)
 
