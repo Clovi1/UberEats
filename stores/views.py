@@ -31,6 +31,11 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        return super().update(request, *args, **kwargs)
+
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
