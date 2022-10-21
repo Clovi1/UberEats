@@ -34,7 +34,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         print(request.data)
         if 'kitchen[]' in request.data:
-            kitchen = request.data.pop('kitchen[]')
+            kitchen = request.data.pop('kitchen[]')[0]
             request.data['kitchen'] = kitchen
             print(request.data)
         return super().update(request, *args, **kwargs)
@@ -42,7 +42,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         print(request.data)
         if 'kitchen[]' in request.data:
-            kitchen = request.data.pop('kitchen[]')
+            kitchen = request.data.pop('kitchen[]')[0]
             request.data['kitchen'] = kitchen
             print(request.data)
         return super().partial_update(request, *args, **kwargs)
