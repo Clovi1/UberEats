@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_list_or_404
 from rest_framework import status, viewsets
 from rest_framework.generics import *
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -42,9 +43,26 @@ class KitchenViewSet(viewsets.ModelViewSet):
     serializer_class = KitchenSerializer
 
 
+class FoodListPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link()
+            },
+            'count': self.page.paginator.count,
+            'food': data
+        })
+
+
 class FoodViewSet(viewsets.ModelViewSet):
     queryset = Food.objects.all()
     serializer_class = FoodRetrieveSerializer
+    pagination_class = FoodListPagination
     filterset_fields = ['restaurants', 'categories']
 
     def get_serializer_class(self):
