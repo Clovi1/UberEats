@@ -45,8 +45,6 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         if 'kitchen[]' in request.data:
             kitchen = request.data.get('kitchen[]')
             print(f'kitchen: {kitchen}')
-            print(list(request.PATCH.items()))
-            print(dict(request.PATCH.items()))
             request.data['kitchen'].add(kitchen)
             print(request.data)
         return super().partial_update(request, *args, **kwargs)
