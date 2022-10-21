@@ -35,6 +35,11 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         print(request.data)
         return super().update(request, *args, **kwargs)
 
+    def partial_update(self, request, *args, **kwargs):
+        print(request.data)
+        return super().partial_update(request, *args, **kwargs)
+
+
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
