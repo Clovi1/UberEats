@@ -42,6 +42,12 @@ class RestaurantRetrieveSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'slug', 'time', 'image', 'owner', 'kitchen']
         lookup_field = 'slug'
 
+    # def update(self, instance, validated_data):
+    #     kitchen = validated_data.pop('kitchen[]')
+    #     print(validated_data)
+    #     instance.kitchen = kitchen
+    #     return super().update(instance, validated_data)
+
 
 class FoodRetrieveSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')

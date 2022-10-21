@@ -31,23 +31,23 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    # def update(self, request, *args, **kwargs):
-    #     print(request.data)
-    #     if 'kitchen[]' in request.data:
-    #         kitchen = request.data.get('kitchen[]')
-    #         print(f'kitchen: {kitchen}')
-    #         request.data.add(kitchen)
-    #         print(request.data)
-    #     return super().update(request, *args, **kwargs)
-    #
-    # def partial_update(self, request, *args, **kwargs):
-    #     print(request.data)
-    #     if 'kitchen[]' in request.data:
-    #         kitchen = request.data.get('kitchen[]')
-    #         print(f'kitchen: {kitchen}')
-    #         request.data.add(kitchen)
-    #         print(request.data)
-    #     return super().partial_update(request, *args, **kwargs)
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        # if 'kitchen[]' in request.data:
+        #     kitchen = request.data.get('kitchen[]')
+        #     print(f'kitchen: {kitchen}')
+        #
+        #     print(request.data)
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        print(request.data)
+        # if 'kitchen[]' in request.data:
+        #     kitchen = request.data.get('kitchen[]')
+        #     print(f'kitchen: {kitchen}')
+        #     request.data.add(kitchen)
+        #     print(request.data)
+        return super().partial_update(request, *args, **kwargs)
 
 
 
