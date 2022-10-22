@@ -32,24 +32,10 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def update(self, request, *args, **kwargs):
-        print(request.data)
-        # if 'kitchen[]' in request.data:
-        #     kitchen = request.data.get('kitchen[]')
-        #     print(f'kitchen: {kitchen}')
-        #
-        #     print(request.data)
+        if 'kitchen[]' in request.data:
+            request.data._mutable = True
+            request.data.setlist('kitchen', request.data.pop('kitchen[]'))
         return super().update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        print(request.data)
-        # if 'kitchen[]' in request.data:
-        #     kitchen = request.data.get('kitchen[]')
-        #     print(f'kitchen: {kitchen}')
-        #     request.data.add(kitchen)
-        #     print(request.data)
-        return super().partial_update(request, *args, **kwargs)
-
-
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
