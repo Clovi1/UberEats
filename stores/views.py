@@ -35,6 +35,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         if 'kitchen[]' in request.data:
             request.data._mutable = True
             request.data.setlist('kitchen', request.data.pop('kitchen[]'))
+            request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
 
