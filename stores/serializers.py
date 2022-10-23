@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from stores.models import *
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRetrieveSerializer(serializers.ModelSerializer):
     restaurants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
@@ -13,10 +13,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'restaurants']
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryRetrieveSerializer(serializers.ModelSerializer):
+    restaurants = serializers.StringRelatedField(read_only=True, source='restaurants.title')
+
     class Meta:
         model = Category
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'restaurants']
+
+
+class CategoryCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ['id', 'title', 'restaurants']
 
 
 class KitchenSerializer(serializers.ModelSerializer):
@@ -58,22 +67,22 @@ class FoodCreateSerializer(serializers.ModelSerializer):
         model = Food
         fields = ['id', 'title', 'description', 'image', 'price', 'owner', 'categories', 'restaurants']
 
-    def create(self, validated_data):
-        categories = validated_data.pop('categories')
-        food = Food.objects.create(**validated_data)
-        food.categories.set(categories)
-        for category in categories:
-            food.restaurants.categories.add(category.pk)
-        return food
-
-    def update(self, instance, validated_data):
-        categories = instance.categories.all()
-        for category in categories:
-            if category.food.filter(restaurants=instance.restaurants).count() <= 1:
-                instance.restaurants.categories.remove(category)
-
-        categories = validated_data.pop('categories')
-        instance.categories.set(categories)
-        for category in categories:
-            instance.restaurants.categories.add(category.pk)
-        return super().update(instance, validated_data)
+    # def create(self, validated_data):
+    #     categories = validated_data.pop('categories')
+    #     food = Food.objects.create(**validated_data)
+    #     food.categories.set(categories)
+    #     for category in categories:
+    #         food.restaurants.categories.add(category.pk)
+    #     return food
+    #
+    # def update(self, instance, validated_data):
+    #     categories = instance.categories.all()
+    #     for category in categories:
+    #         if category.food.filter(restaurants=instance.restaurants).count() <= 1:
+    #             instance.restaurants.categories.remove(category)
+    #
+    #     categories = validated_data.pop('categories')
+    #     instance.categories.set(categories)
+    #     for category in categories:
+    #         instance.restaurants.categories.add(category.pk)
+    #     return super().update(instance, validated_data)
