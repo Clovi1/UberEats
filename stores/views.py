@@ -75,7 +75,7 @@ class FoodViewSet(viewsets.ModelViewSet):
     queryset = Food.objects.all()
     serializer_class = FoodRetrieveSerializer
     pagination_class = FoodListPagination
-    filterset_fields = ['restaurants', 'categories']
+    filterset_fields = ['categories']
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -86,11 +86,3 @@ class FoodViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    # def destroy(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     categories = instance.categories.all()
-    #     for category in categories:
-    #         if category.food.filter(restaurants=instance.restaurants).count() <= 1:
-    #             instance.restaurants.categories.remove(category)
-    #     self.perform_destroy(instance)
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
