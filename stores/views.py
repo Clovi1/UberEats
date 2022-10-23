@@ -32,10 +32,21 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def update(self, request, *args, **kwargs):
+        request.data._mutable = True
         if 'kitchen[]' in request.data:
-            request.data._mutable = True
             request.data.setlist('kitchen', request.data.pop('kitchen[]'))
-            request.data._mutable = False
+
+        if 'new_kitchen[]' in request.data:
+            new_kitchen = request.data.pop('new_kitchen[]')
+            instance = self.get_object()
+            for title in new_kitchen:
+                if title:
+                    kitchen = Kitchen.objects.filter(title=title).first()
+                    if kitchen:
+                        instance.kitchen.add(kitchen)
+                    else:
+                        instance.kitchen.add(Kitchen.objects.create(title=title))
+        request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
 
@@ -85,4 +96,3 @@ class FoodViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
