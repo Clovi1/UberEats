@@ -49,6 +49,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
                     else:
                         instance.kitchen.add(Kitchen.objects.create(title=title))
                     print(f'{instance.kitchen.all() = }')
+            instance.save()
         request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
