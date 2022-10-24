@@ -38,8 +38,9 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
         if 'new_kitchen[]' in request.data:
             new_kitchen = request.data.pop('new_kitchen[]')
-            print(f'new_kitchen = {new_kitchen}')
+            print(f'{new_kitchen = }')
             instance = self.get_object()
+            print(f'{instance.kitchen.all() = }')
             for title in new_kitchen:
                 if title:
                     kitchen = Kitchen.objects.filter(title=title).first()
@@ -47,6 +48,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
                         instance.kitchen.add(kitchen)
                     else:
                         instance.kitchen.add(Kitchen.objects.create(title=title))
+                    print(f'{instance.kitchen.all() = }')
         request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
