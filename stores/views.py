@@ -33,23 +33,28 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         request.data._mutable = True
+        lst = []
         if 'kitchen[]' in request.data:
-            request.data.setlist('kitchen', request.data.pop('kitchen[]'))
-
+            lst = [*request.data.pop('kitchen[]')]
+            # request.data.setlist('kitchen', request.data.pop('kitchen[]'))
+        print(lst)
         if 'new_kitchen[]' in request.data:
             new_kitchen = request.data.pop('new_kitchen[]')
             print(f'{new_kitchen = }')
-            instance = self.get_object()
-            print(f'{instance.kitchen.all() = }')
+
+            # print(f'{instance.kitchen.all() = }')
             for title in new_kitchen:
                 if title:
                     kitchen = Kitchen.objects.filter(title=title).first()
                     if kitchen:
-                        instance.kitchen.add(kitchen)
+                        # instance.kitchen.add(kitchen)
+                        lst.append(kitchen.pk)
                     else:
-                        instance.kitchen.add(Kitchen.objects.create(title=title))
-                    print(f'{instance.kitchen.all() = }')
-            instance.save()
+                        # instance.kitchen.add(Kitchen.objects.create(title=title))
+                        lst.append(Kitchen.objects.create(title=title).pk)
+        print(lst)
+        request.data.setlist('kitchen', lst)
+        # print(f'{instance.kitchen.all() = }')
         request.data._mutable = False
         return super().update(request, *args, **kwargs)
 
