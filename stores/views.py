@@ -38,6 +38,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
         if 'new_kitchen[]' in request.data:
             new_kitchen = request.data.pop('new_kitchen[]')
+            print(f'new_kitchen = {new_kitchen}')
             instance = self.get_object()
             for title in new_kitchen:
                 if title:
