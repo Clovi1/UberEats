@@ -5,14 +5,6 @@ from django.contrib.auth.models import User
 from stores.models import *
 
 
-class UserRetrieveSerializer(serializers.ModelSerializer):
-    restaurants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'restaurants']
-
-
 class CategoryRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
