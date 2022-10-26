@@ -4,9 +4,10 @@ from rest_framework import status, viewsets
 from rest_framework.generics import *
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
+
 from rest_framework.views import APIView
 
+from pagination import FoodListPagination
 from .permissions import IsOwnerOrAdminOrReadOnly, IsRestaurantOwnerOrReadOnly, IsRestaurantOwnerObjectOrReadOnly
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
@@ -80,27 +81,11 @@ class KitchenViewSet(viewsets.ModelViewSet):
     serializer_class = KitchenSerializer
 
 
-class FoodListPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
-
-    def get_paginated_response(self, data):
-        return Response({
-            'links': {
-                'next': self.get_next_link(),
-                'previous': self.get_previous_link()
-            },
-            'count': self.page.paginator.count,
-            'food': data
-        })
-
-
 class FoodViewSet(viewsets.ModelViewSet):
     queryset = Food.objects.all()
     serializer_class = FoodRetrieveSerializer
     pagination_class = FoodListPagination
-    filterset_fields = ['categories']
+    filterset_fields = ['restaurants','categories']
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -110,3 +95,10 @@ class FoodViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def get_permissions(self):
+        if self.action == 'create':
+            permission_classes = [IsRestaurantOwnerOrReadOnly]
+        else:
+            permission_classes = [IsRestaurantOwnerObjectOrReadOnly]
+        return [permission() for permission in permission_classes]
