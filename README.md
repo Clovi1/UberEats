@@ -1,6 +1,7 @@
 # UberEats
-Pet-проект интернет магазина с едой на Django REST framework  
+<h3>Currently under development</h3>  
+Pet project of an online store with food on Django REST framework  
+
 https://main--musical-crepe-fa13ce.netlify.app/  
-На данный момент находится в разработке  
-За фронтенд отвечает https://github.com/anxel09  
-Просмотр стороны бэкенда https://ubereats0.herokuapp.com/swagger/
+Viewing the backend side https://ubereats0.herokuapp.com/swagger/  
+Responsible for the frontend https://github.com/anxel09  
