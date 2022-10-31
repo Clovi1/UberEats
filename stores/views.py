@@ -1,16 +1,9 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_list_or_404
-from rest_framework import status, viewsets
-from rest_framework.generics import *
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from rest_framework.views import APIView
-
-from pagination import FoodListPagination
+from stores.pagination import FoodListPagination
 from .permissions import IsOwnerOrAdminOrReadOnly, IsRestaurantOwnerOrReadOnly, IsRestaurantOwnerObjectOrReadOnly
 from .serializers import *
-from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import *
 
@@ -79,13 +72,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class KitchenViewSet(viewsets.ModelViewSet):
     queryset = Kitchen.objects.all()
     serializer_class = KitchenSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class FoodViewSet(viewsets.ModelViewSet):
     queryset = Food.objects.all()
     serializer_class = FoodRetrieveSerializer
     pagination_class = FoodListPagination
-    filterset_fields = ['restaurants','categories']
+    filterset_fields = ['restaurants', 'categories']
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -102,3 +96,5 @@ class FoodViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsRestaurantOwnerObjectOrReadOnly]
         return [permission() for permission in permission_classes]
+
+# TODO: Корзина

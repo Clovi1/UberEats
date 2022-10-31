@@ -1,5 +1,4 @@
 from rest_framework import permissions
-
 from stores.models import Restaurant, Category
 
 
