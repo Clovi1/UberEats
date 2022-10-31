@@ -10,7 +10,6 @@ router.register(r'kitchen', views.KitchenViewSet, basename='kitchen')
 router.register(r'food', views.FoodViewSet, basename='food')
 
 urlpatterns = [
-    # Главная страница
     path('', include(router.urls)),
 
     path('auth/', include('djoser.urls')),
