@@ -1,3 +1,3 @@
 # UberEats
 Pet-проект 
-За frontend отвечает anxel09
+За frontend отвечает https://github.com/anxel09
